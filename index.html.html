@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Q1 招聘全流程全维度效能看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        :root { --gold: #fbbf24; --primary: #3b82f6; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --bg: #f1f5f9; --text: #1e293b; --card: #ffffff; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* 冠军奖牌样式 */
+        .champion-card { 
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid var(--gold); border-radius: 16px; padding: 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 25px; box-shadow: 0 10px 15px -3px rgba(251, 191, 36, 0.2);
+        }
+        .crown { font-size: 50px; margin-right: 20px; }
+        .champion-info h3 { margin: 0; color: #92400e; font-size: 1.5rem; }
+        .rank-tag { background: var(--gold); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+
+        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); grid-column: span 6; }
+        .full-width { grid-column: span 12; }
+        
+        h2 { font-size: 1.2rem; margin: 0 0 20px 0; border-left: 5px solid var(--primary); padding-left: 12px; }
+        .chart-container { height: 400px; width: 100%; }
+
+        /* 全数据表格样式 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; }
+        th { background: #f1f5f9; color: #475569; font-weight: 600; text-align: center; padding: 12px; font-size: 0.85rem; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
+        .highlight-row { background: #fffbeb; font-weight: bold; }
+        .trend-up { color: var(--success); font-weight: bold; }
+
+        /* 升级版深度洞察样式 */
+        .insight-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+        .insight-item { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .tag { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 8px; }
+        .tag-leaf { background: #dcfce7; color: var(--success); }
+        .tag-chen { background: #fee2e2; color: var(--danger); }
+        .tag-li { background: #fffbeb; color: var(--warning); }
+        .tag-huang { background: #fffbeb; color: #b45309; }
+        .insight-h4 { margin: 8px 0; font-size: 1.1rem; color: #1e293b; }
+        b.leaf { color: var(--success); }
+        b.chen { color: var(--danger); }
+        b.li { color: var(--warning); }
+        b.huang { color: #b45309; }
+        b.primary { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="champion-card">
+            <div style="display: flex; align-items: center;">
+                <div class="crown">👑</div>
+                <div class="champion-info">
+                    <span class="rank-tag">Q1 招聘交付冠军</span>
+                    <h3>黄尚昕 (Huang Shangxin)</h3>
+                    <p style="margin: 5px 0 0 0; color: #b45309;">达成 4 个岗位需求，最终录用率高达 <b style="font-size:1.2rem;">11.36%</b>，精准捕获模式标杆！</p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.9rem; color: #92400e;">最终录用转化率</div>
+                <div style="font-size: 2rem; font-weight: 800; color: #b45309;">11.36%</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card full-width">
+                <h2>各 HR 全阶段招聘漏斗数据对比</h2>
+                <div id="fullProcessChart" class="chart-container"></div>
+            </div>
+
+            <div class="card">
+                <h2>初试 vs 复试录用转化能力</h2>
+                <div id="interviewChart" class="chart-container"></div>
+            </div>
+
+            <div class="card">
+                <h2>各 HR 需求达成排名 (录用人数)</h2>
+                <div id="rankChart" class="chart-container"></div>
+            </div>
+
+            <div class="card full-width">
+                <h2>📊 全流程全阶段 HR 整体明细数据</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HR 姓名</th>
+                            <th>提交简历</th>
+                            <th>筛选通过</th>
+                            <th>成功约面</th>
+                            <th>实际到面</th>
+                            <th>初试录用</th>
+                            <th>成功复试</th>
+                            <th>复试录用</th>
+                            <th>达成需求</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>叶婷</td><td>365</td><td>313</td><td>63</td><td>52</td><td>14</td><td>8</td><td>3</td><td>2</td></tr>
+                        <tr><td>陈欣瑜</td><td>513</td><td>191</td><td>80</td><td>64</td><td>14</td><td>6</td><td>2</td><td>1</td></tr>
+                        <tr><td>李晶</td><td>192</td><td>87</td><td>40</td><td>32</td><td>7</td><td>2</td><td>0</td><td>1</td></tr>
+                        <tr class="highlight-row"><td>黄尚昕 👑</td><td>335</td><td>101</td><td>53</td><td>44</td><td>15</td><td>9</td><td>5</td><td class="trend-up">4</td></tr>
+                        <tr style="background:#f8fafc; font-weight:bold;"><td>内推/其他</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>2</td></tr>
+                        <tr style="background:#3b82f6; color:#fff;"><td>总计</td><td>1405</td><td>510</td><td>236</td><td>208</td><td>64</td><td>25</td><td>10</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card full-width">
+                <h2>🔍 深度洞察与诊断报告 (AI Insights)</h2>
+                <div class="insight-grid">
+                    <div class="insight-item">
+                        <span class="tag tag-leaf">画像偏差 / 筛选松懈</span>
+                        <h4 class="insight-h4">叶婷：高虚胖筛选与面试高淘汰</h4>
+                        <p style="font-size:0.9rem; color:#475569">
+                            <b>✅ 亮点：</b> 简历获取能力强（365份），到面率高（74.29%），成功把候选人“拉”到了面试场。<br>
+                            <b>❌ 挑战：</b> 简历筛选通过率高达 <b>85.7%</b>，是全组最高的。但这并没有带来录用，其初试淘汰率也极高。这表明<b class="primary">叶婷的筛选标准过于宽松，画像校准模糊</b>，浪费了大量初试资源。<br>
+                            <b>💡 建议：</b> 重新校准 JD 画像，要求其在筛选阶段增加岗位硬性指标拦截，减少“海选”心态。
+                        </p>
+                    </div>
+                    <div class="insight-item" style="background:#fffbeb; border:1px solid var(--gold);">
+                        <span class="tag tag-huang">精准猎手 / 交付标杆</span>
+                        <h4 class="insight-h4">黄尚昕：低简历流失与高硬指标交付</h4>
+                        <p style="font-size:0.9rem; color:#475569">
+                            <b>✅ 亮点：</b> 全流程效能冠军。其简历通过率仅为 <b>30.1%</b>（最严格），但到面后的录用率却高达 <b class="huang">11.36%</b>。其提交的候选人含金量最高，深得用人部门信任。<br>
+                            <b>❌ 挑战：</b> 简历筛选阶段的流失量最大（335份），渠道获取压力大。<br>
+                            <b>💡 建议：</b> <b class="primary">总结黄尚昕的“画像精准筛选方法论”</b>并在组内推广。其可作为核心、疑难岗位的交付主攻。
+                        </p>
+                    </div>
+                    <div class="insight-item">
+                        <span class="tag tag-chen">低效海选 / 有效工作低</span>
+                        <h4 class="insight-h4">陈欣瑜：高简历量背后的极低通过率</h4>
+                        <p style="font-size:0.9rem; color:#475569">
+                            <b>✅ 亮点：</b> 简历提交量全组最高（513份），约面数最多。<br>
+                            <b>❌ 挑战：</b> <b class="chen">简历通过率仅 37.2%</b>（第二低），初试、复试流失率高，最终录用比（录用/到面）仅 3.1%。这意味着陈欣瑜有大量的“无效筛选工作”，浪费了渠道时间和内部面试官精力。<br>
+                            <b>💡 建议：</b> <b class="primary">进行“无效简历诊断”专场复盘</b>。深入分析其流失的80%简历原因，校准其对 JD 的理解偏差。
+                        </p>
+                    </div>
+                    <div class="insight-item">
+                        <span class="tag tag-li">产出断层 / 岗位复盘</span>
+                        <h4 class="insight-h4">李晶：复试录用断层与高失约风险</h4>
+                        <p style="font-size:0.9rem; color:#475569">
+                            <b>✅ 亮点：</b> 约面数（40）和到面数（32）虽小但稳定。<br>
+                            <b>❌ 挑战：</b> <b class="li">最终录用为 0</b>（1人是其他渠道达成）。这是严重的产出断层。到面率（71%）为全组最低。这意味着：1.负责岗位竞争极大；2.候选人匹配度极低；3.面试辅导缺失。<br>
+                            <b>💡 建议：</b> <b class="primary">立即进行岗位专项复盘</b>。分析李晶所负责职位的市场竞争力，并由主管介入进行面试辅导。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化图表
+        const fullProcessChart = echarts.init(document.getElementById('fullProcessChart'));
+        const interviewChart = echarts.init(document.getElementById('interviewChart'));
+        const rankChart = echarts.init(document.getElementById('rankChart'));
+
+        // 1. 全阶段数据对比图
+        fullProcessChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { data: ['简历提交', '筛选通过', '实际到面', '初试录用', '复试录用'] },
+            xAxis: { type: 'category', data: ['叶婷', '陈欣瑜', '李晶', '黄尚昕'] },
+            yAxis: { type: 'value' },
+            series: [
+                { name: '简历提交', type: 'bar', data: [365, 513, 192, 335], itemStyle: {color: '#cbd5e1'} },
+                { name: '筛选通过', type: 'bar', data: [313, 191, 87, 101], itemStyle: {color: '#94a3b8'} },
+                { name: '实际到面', type: 'bar', data: [52, 64, 32, 44], itemStyle: {color: '#3b82f6'} },
+                { name: '初试录用', type: 'bar', data: [14, 14, 7, 15], itemStyle: {color: '#10b981'} },
+                { name: '复试录用', type: 'bar', data: [3, 2, 0, 5], itemStyle: {color: '#f43f5e'} }
+            ]
+        });
+
+        // 2. 初试 vs 复试
+        interviewChart.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['初试录用', '复试录用'] },
+            radar: {
+                indicator: [
+                    { name: '叶婷', max: 20 }, { name: '陈欣瑜', max: 20 },
+                    { name: '李晶', max: 20 }, { name: '黄尚昕', max: 20 }
+                ]
+            },
+            series: [{
+                type: 'radar',
+                data: [
+                    { value: [14, 14, 7, 15], name: '初试录用', areaStyle: {color: 'rgba(16, 185, 129, 0.3)'} },
+                    { value: [3, 2, 0, 5], name: '复试录用', areaStyle: {color: 'rgba(244, 63, 94, 0.3)'} }
+                ]
+            }]
+        });
+
+        // 3. 需求达成排名
+        rankChart.setOption({
+            tooltip: { trigger: 'item' },
+            xAxis: { type: 'value' },
+            yAxis: { type: 'category', data: ['李晶', '陈欣瑜', '叶婷', '内推', '黄尚昕'] },
+            series: [{
+                data: [
+                    { value: 1, itemStyle: {color: '#94a3b8'} },
+                    { value: 1, itemStyle: {color: '#94a3b8'} },
+                    { value: 2, itemStyle: {color: '#3b82f6'} },
+                    { value: 2, itemStyle: {color: '#10b981'} },
+                    { value: 4, itemStyle: {color: '#fbbf24'} }
+                ],
+                type: 'bar',
+                label: { show: true, position: 'right', formatter: '{c} 个' }
+            }]
+        });
+
+        window.onresize = function() {
+            [fullProcessChart, interviewChart, rankChart].forEach(c => c.resize());
+        };
+    </script>
+</body>
+</html>
